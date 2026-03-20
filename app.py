@@ -1,11 +1,16 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 from BFS import buscar_solucion_BFS
 
 app = Flask(__name__)
 
+# 👉 Servir el HTML
 @app.route("/")
+def home():
+    return send_file("index.html")
+
+# 👉 Endpoint BFS
+@app.route("/resolver")
 def resolver():
-    # Valores por defecto
     inicial = request.args.get("inicial", "4,2,3,1")
     objetivo = request.args.get("objetivo", "1,2,3,4")
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>BFS Visual</title>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+
+  <h1>Solver BFS</h1>
+
+  <input id="inicial" value="4,2,3,1" placeholder="Estado inicial">
+  <input id="objetivo" value="1,2,3,4" placeholder="Objetivo">
+
+  <br><br>
+  <button onclick="resolver()">Resolver</button>
+
+  <h2>Resultado:</h2>
+  <div id="resultado"></div>
+
+  <script>
+    async function resolver() {
+      const inicial = document.getElementById("inicial").value;
+      const objetivo = document.getElementById("objetivo").value;
+
+      // 👉 IMPORTANTE: ahora es ruta interna
+      const url = `/resolver?inicial=${inicial}&objetivo=${objetivo}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.text();
+
+        const pasos = JSON.parse(data.replace(/'/g, '"'));
+
+        const contenedor = document.getElementById("resultado");
+        contenedor.innerHTML = "";
+
+        pasos.forEach((paso, i) => {
+          const div = document.createElement("div");
+          div.style.border = "2px solid #333";
+          div.style.borderRadius = "10px";
+          div.style.background = "#f5f5f5";
+          div.style.margin = "10px";
+          div.style.padding = "10px";
+
+          div.innerHTML = `<strong>Paso ${i}</strong><br>${paso.join(" - ")}`;
+          contenedor.appendChild(div);
+        });
+
+      } catch (error) {
+        console.error(error);
+        alert("Error al conectar con el servidor");
+      }
+    }
+  </script>
+
+</body>
+</html>
