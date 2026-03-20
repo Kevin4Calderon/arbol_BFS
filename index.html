@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>BFS Visual</title>
+  <title>BFS Ciudades</title>
 
   <style>
     body {
@@ -23,7 +23,7 @@
       border-radius: 8px;
       border: none;
       outline: none;
-      width: 150px;
+      width: 180px;
     }
 
     button {
@@ -55,7 +55,7 @@
       color: black;
       border-radius: 15px;
       padding: 15px;
-      width: 120px;
+      width: 140px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       transition: transform 0.2s;
     }
@@ -74,15 +74,15 @@
 
 <body>
 
-  <h1>🔍 BFS Solver</h1>
+  <h1>🌎 Ruta entre ciudades (BFS)</h1>
 
-  <input id="inicial" value="4,2,3,1" placeholder="Inicial">
-  <input id="objetivo" value="1,2,3,4" placeholder="Objetivo">
+  <input id="inicial" value="Hidalgo" placeholder="Ciudad inicial">
+  <input id="objetivo" value="GDL" placeholder="Ciudad destino">
 
   <br><br>
-  <button onclick="resolver()">Resolver</button>
+  <button onclick="resolver()">Buscar ruta</button>
 
-  <h2>Resultados</h2>
+  <h2>Ruta encontrada</h2>
   <div id="resultado"></div>
 
   <script>
@@ -90,24 +90,27 @@
       const inicial = document.getElementById("inicial").value;
       const objetivo = document.getElementById("objetivo").value;
 
-      const url = `/resolver?inicial=${inicial}&objetivo=${objetivo}`;
+      const url = `/resolver?inicio=${inicial}&objetivo=${objetivo}`;
 
       try {
         const res = await fetch(url);
-
-        // ✅ CORRECTO: usar JSON directo
-        const pasos = await res.json();
+        const ruta = await res.json();
 
         const contenedor = document.getElementById("resultado");
         contenedor.innerHTML = "";
 
-        pasos.forEach((paso, i) => {
+        if (!ruta || ruta.length === 0) {
+          contenedor.innerHTML = "<p>No se encontró ruta</p>";
+          return;
+        }
+
+        ruta.forEach((ciudad, i) => {
           const div = document.createElement("div");
           div.className = "card";
 
           div.innerHTML = `
             <div class="step">Paso ${i}</div>
-            <div>${paso.join(" ")}</div>
+            <div>${ciudad}</div>
           `;
 
           contenedor.appendChild(div);

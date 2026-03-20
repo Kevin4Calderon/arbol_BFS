@@ -1,39 +1,39 @@
-from flask import Flask, request, send_file, jsonify
-from BFS import buscar_solucion_BFS
-import os
+from flask import Flask, request, jsonify, send_from_directory
+from BFS_ciudades import buscar_ruta_BFS
 
 app = Flask(__name__)
 
-# 👉 Servir el HTML
-@app.route("/")
-def home():
-    return send_file("index.html")
+# Grafo basado en tu imagen
+grafo = {
+    "Hidalgo": ["Jilo-York", "SLP", "Monterrey"],
+    "Jilo-York": ["Hidalgo", "CDMX"],
+    "QRO": ["SLP"],
+    "SLP": ["QRO", "Hidalgo", "CDMX", "Zacatecas", "Tamaulipas"],
+    "Zacatecas": ["SLP", "GDL"],
+    "GDL": ["Zacatecas"],
+    "CDMX": ["Jilo-York", "Morelos", "Tamaulipas", "SLP", "Monterrey"],
+    "Morelos": ["CDMX", "Tamaulipas"],
+    "Tamaulipas": ["Morelos", "CDMX", "SLP"],
+    "Monterrey": ["Hidalgo", "CDMX"]
+}
 
-# 👉 Endpoint BFS
+# Servir HTML
+@app.route("/")
+def index():
+    return send_from_directory(".", "index.html")
+
+# Endpoint BFS
 @app.route("/resolver")
 def resolver():
-    inicial = request.args.get("inicial", "4,2,3,1")
-    objetivo = request.args.get("objetivo", "1,2,3,4")
+    inicio = request.args.get("inicio")
+    objetivo = request.args.get("objetivo")
 
-    # Convertir a listas
-    estado_inicial = list(map(int, inicial.split(",")))
-    solucion = list(map(int, objetivo.split(",")))
+    if not inicio or not objetivo:
+        return jsonify({"error": "Faltan parámetros"}), 400
 
-    # Ejecutar BFS
-    nodo_solucion = buscar_solucion_BFS(estado_inicial, solucion)
+    ruta = buscar_ruta_BFS(grafo, inicio, objetivo)
 
-    resultado = []
-    nodo = nodo_solucion
-
-    while nodo.get_padre() != None:
-        resultado.append(nodo.get_datos())
-        nodo = nodo.get_padre()
-
-    resultado.append(estado_inicial)
-    resultado.reverse()
-
-    return jsonify(resultado)
+    return jsonify(ruta)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=10000)
