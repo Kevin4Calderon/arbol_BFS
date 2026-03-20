@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, jsonify
 from BFS import buscar_solucion_BFS
 import os
 
@@ -32,7 +32,7 @@ def resolver():
     resultado.append(estado_inicial)
     resultado.reverse()
 
-    return str(resultado)
+    return jsonify(resultado)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

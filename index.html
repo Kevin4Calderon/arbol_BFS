@@ -94,9 +94,9 @@
 
       try {
         const res = await fetch(url);
-        const data = await res.text();
 
-        const pasos = JSON.parse(data.replace(/'/g, '"'));
+        // ✅ CORRECTO: usar JSON directo
+        const pasos = await res.json();
 
         const contenedor = document.getElementById("resultado");
         contenedor.innerHTML = "";
